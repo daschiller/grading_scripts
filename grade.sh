@@ -5,8 +5,10 @@
 
 #set -eux
 
-SEP=","
-TIMEOUT=15
+# can be overridden by environment
+SEP=${SEP-","}
+TIMEOUT=${TIMEOUT-15}
+
 UNITTEST="$(readlink -f "$1")"
 DIR="$(readlink -f "$2")"
 
