@@ -39,12 +39,12 @@ cd "$(dirname "$UNITTEST")" || {
 run_unittest() {
     shopt -s nullglob
     for submission in "$DIR"/*assignsubmission*/*.py; do
-        # copy, if linking fails (happens on non-Unix file systems)
-        ln -sf "$submission" . || cp "$submission" .
+        cp "$submission" .
 
         # when "timeout" times out, it returns 124
         points="$(
-            timeout "$TIMEOUT" python3 -u ./"$(basename "$UNITTEST")" | grep -Po '^Moodle points: \K\d+'
+            timeout "$TIMEOUT" python3 -u ./"$(basename "$UNITTEST")" |
+                grep -Po '^(Moodle points|Estimated points upon submission): \K\d+'
             [ "${PIPESTATUS[0]}" != 124 ]
         )"
         [ "$?" -eq 1 ] && points="TIMEOUT"
