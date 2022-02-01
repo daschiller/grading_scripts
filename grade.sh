@@ -36,6 +36,12 @@ cd "$(dirname "$UNITTEST")" || {
     exit 1
 }
 
+command -v bc &>/dev/null || {
+    echo "Error: bc (basic calculator) is not available" >&2
+    usage
+    exit 1
+}
+
 run_unittest() {
     shopt -s nullglob
     for submission in "$DIR"/*assignsubmission*/*.py; do
@@ -44,11 +50,14 @@ run_unittest() {
         # when "timeout" times out, it returns 124
         points="$(
             timeout "$TIMEOUT" python3 -u ./"$(basename "$UNITTEST")" |
-                grep -Po '^(Moodle points|Estimated points upon submission): \K\d+'
+                grep -Po '^(Moodle points|Estimated points upon submission): \K\d+\.?d*'
             [ "${PIPESTATUS[0]}" != 124 ]
         )"
         [ "$?" -eq 1 ] && points="TIMEOUT"
         [ -z "$points" ] && points="ERROR"
+        # if points is a float, we multiply by 10 to satisfy Moodle
+        [[ $points == *.* ]] && points="$(bc <<<"$points * 10 / 1")"
+
         subdir="$(basename "$(dirname "$submission")")"
         subdir="${subdir//_assignsubmission_file_/}"
         name="${subdir%_*}"
