@@ -4,6 +4,7 @@
 # Copyright (c) 2021 David Schiller <david.schiller@jku.at>
 
 #set -eux
+shopt -s nullglob extglob
 
 # can be overridden by environment
 SEP=${SEP-","}
@@ -45,13 +46,12 @@ command -v bc &>/dev/null || {
 }
 
 run_unittest() {
-    shopt -s nullglob
-    for submission in "$DIR"/*assignsubmission*/*.py; do
+    for submission in "$DIR"/*assignsubmission*/ex+([0-9]).py; do
         cp "$submission" .
 
         # when "timeout" times out, it returns 124
         points="$(
-            timeout "$TIMEOUT" python3 -u ./"$(basename "$UNITTEST")" |
+            timeout "$TIMEOUT" python3 -u ./"$(basename "$UNITTEST")" </dev/null |
                 grep -Po '^(Moodle points|Estimated points upon submission): \K\d+\.?d*'
             [ "${PIPESTATUS[0]}" != 124 ]
         )"
