@@ -53,13 +53,11 @@ run_dir() {
         # when "timeout" times out, it returns 124
         points="$(
             timeout "$TIMEOUT" python3 -u ./"$(basename "$UNITTEST")" </dev/null |
-                grep -Po '^(Moodle points|Estimated points upon submission): \K\d+\.?d*'
+                grep -Po '^(Moodle points|Estimated points upon submission): \K\d+\.\d*'
             [ "${PIPESTATUS[0]}" != 124 ]
         )"
         [ "$?" -eq 1 ] && points="TIMEOUT"
         [ -z "$points" ] && points="ERROR"
-        # if points is a float, we multiply by 10 to satisfy Moodle
-        [[ $points == *.* ]] && points="$(bc <<<"$points * 10 / 1")"
 
         subdir="$(basename "$(dirname "$submission")")"
         subdir="${subdir//_assignsubmission_file_/}"
