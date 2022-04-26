@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # SPDX-License-Identifier: GPL-3.0-only
-# Copyright (c) 2021 David Schiller <david.schiller@jku.at>
+# Copyright (c) 2022 David Schiller <david.schiller@jku.at>
 
 import argparse
 from csv import QUOTE_NONNUMERIC
