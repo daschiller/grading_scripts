@@ -40,12 +40,6 @@ cd "$(dirname "$UNITTEST")" || {
     exit 1
 }
 
-command -v bc &>/dev/null || {
-    echo "Error: bc (basic calculator) is not available" >&2
-    usage
-    exit 1
-}
-
 run_dir() {
     for submission in "$TARGET"/*assignsubmission*/ex+([0-9]).py; do
         cp "$submission" .
