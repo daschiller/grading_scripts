@@ -11,11 +11,12 @@ SEP=${SEP-","}
 TIMEOUT=${TIMEOUT-15}
 
 UNITTEST="$(readlink -f "$1")"
-DIR="$(readlink -f "$2")"
+TARGET="$(readlink -f "$2")"
 
 usage() {
-    echo "Usage: $(basename "$0") UNITTEST DIR"
-    echo "Runs UNITTEST for every python script within DIR and prints results as CSV."
+    echo "Usage: $(basename "$0") UNITTEST TARGET"
+    echo "Runs UNITTEST for every python script in TARGET and prints results as CSV."
+    echo "If TARGET is a regular file, the output of the unit test is printed instead."
 }
 
 if [ $# != 2 ]; then
@@ -28,8 +29,8 @@ fi
     usage
     exit 1
 }
-[ -d "$DIR" ] || {
-    echo "Error: DIR needs to be a directory" >&2
+[ -e "$TARGET" ] || {
+    echo "Error: TARGET needs to be a valid file or directory" >&2
     usage
     exit 1
 }
@@ -45,8 +46,8 @@ command -v bc &>/dev/null || {
     exit 1
 }
 
-run_unittest() {
-    for submission in "$DIR"/*assignsubmission*/ex+([0-9]).py; do
+run_dir() {
+    for submission in "$TARGET"/*assignsubmission*/ex+([0-9]).py; do
         cp "$submission" .
 
         # when "timeout" times out, it returns 124
@@ -84,5 +85,17 @@ print_header() {
     echo -e name"$SEP"student_id"$SEP"points"$SEP"feedback
 }
 
-print_header
-run_unittest
+run_file() {
+    cp "$TARGET" .
+
+    python3 ./"$(basename "$UNITTEST")"
+
+    rm ./"$(basename "$TARGET")"
+}
+
+if [ -d "$TARGET" ]; then
+    print_header
+    run_dir
+elif [ -f "$TARGET" ]; then
+    run_file
+fi
