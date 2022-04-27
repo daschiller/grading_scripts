@@ -41,8 +41,10 @@ cd "$(dirname "$UNITTEST")" || {
 }
 
 run_dir() {
-    for submission in "$TARGET"/*assignsubmission*/ex+([0-9]).py; do
-        cp "$submission" .
+    for submission in "$TARGET"/*_ex+([0-9]).py; do
+        base="$(basename "$submission")"
+        exercise="${base##*_}"
+        cp "$submission" "$exercise"
 
         # when "timeout" times out, it returns 124
         points="$(
@@ -53,9 +55,7 @@ run_dir() {
         [ "$?" -eq 1 ] && points="TIMEOUT"
         [ -z "$points" ] && points="ERROR"
 
-        subdir="$(basename "$(dirname "$submission")")"
-        subdir="${subdir//_assignsubmission_file_/}"
-        name="${subdir%_*}"
+        name="${base%%_*}"
 
         # some people have badly mangled the student ID field
         # this regex matches the submission guidelines
@@ -67,7 +67,7 @@ run_dir() {
 
         echo -e "$name""$SEP""$student_id""$SEP""$points""$SEP"
 
-        rm ./"$(basename "$submission")"
+        rm ./"$exercise"
     done
 }
 
@@ -78,11 +78,13 @@ print_header() {
 }
 
 run_file() {
-    cp "$TARGET" .
+    base="$(basename "$TARGET")"
+    exercise="${base##*_}"
+    cp "$TARGET" "$exercise"
 
     python3 ./"$(basename "$UNITTEST")"
 
-    rm ./"$(basename "$TARGET")"
+    rm ./"$exercise"
 }
 
 if [ -d "$TARGET" ]; then
