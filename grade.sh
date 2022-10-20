@@ -41,7 +41,8 @@ cd "$(dirname "$UNITTEST")" || {
 }
 
 run_dir() {
-    for submission in "$TARGET"/*_ex+([0-9]).py; do
+    ex_nr="$(grep -Po 'ex\K\d+' "$UNITTEST")"
+    for submission in "$TARGET"/*_ex${ex_nr}.py; do
         base="$(basename "$submission")"
         exercise="${base##*_}"
         cp "$submission" "$exercise"
@@ -49,7 +50,7 @@ run_dir() {
         # when "timeout" times out, it returns 124
         points="$(
             timeout "$TIMEOUT" python3 -u ./"$(basename "$UNITTEST")" </dev/null |
-                grep -Po '^(Moodle points|Estimated points upon submission): \K\d+\.\d*'
+                grep -Po '^(Moodle points|Estimated points upon submission): \K\d+\.?\d*'
             [ "${PIPESTATUS[0]}" != 124 ]
         )"
         [ "$?" -eq 1 ] && points="TIMEOUT"
@@ -57,15 +58,7 @@ run_dir() {
 
         name="${base%%_*}"
 
-        # some people have badly mangled the student ID field
-        # this regex matches the submission guidelines
-        # id="$(grep -Po 'Matr\.Nr\.: [aA]?[kK]?\K\d{7,8}' "$submission")"
-
-        # this is a more relaxed one that should match all (reasonable) submissions
-        student_id="$(grep -Po '^Mat[A-Za-z. ]*:\s*<?[aA]?[kK]?\K\d{7,8}' "$submission")"
-        [ -z "$student_id" ] && student_id="IDERROR"
-
-        echo -e "$name""$SEP""$student_id""$SEP""$points""$SEP"
+        echo -e "$name""$SEP""$points""$SEP"
 
         rm ./"$exercise"
     done
