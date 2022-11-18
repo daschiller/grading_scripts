@@ -39,7 +39,7 @@ run_dir() {
         echo -n "$student""$SEP"
         for unittest in $UNITTESTS; do
             exercise="${unittest%%_*}".py
-            ex_nr="$(grep -Po 'ex\K\d+' "$unittest")"
+            ex_nr="$(grep -Po 'ex\K\d+' <<<"$unittest")"
             submission="$(echo "$TARGET"/"$student"*ex"$ex_nr".py)"
             if [ -n "$submission" ]; then
                 cp "$submission" "$exercise"

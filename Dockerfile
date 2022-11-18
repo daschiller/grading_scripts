@@ -5,8 +5,7 @@ RUN apt-get update && apt-get install -y bc less python3 python3-pip --no-instal
 #RUN pip3 install -r /tmp/requirements.txt
 #RUN pip3 install ipython ipdb
 
-COPY ./grade.sh /usr/local/bin
-COPY ./grade_assignment.sh /usr/local/bin
+COPY ./grade*.sh /usr/local/bin/
 VOLUME /data
 
 # matplotlib cache directory needs to be writable
