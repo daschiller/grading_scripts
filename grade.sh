@@ -42,15 +42,15 @@ cd "$(dirname "$UNITTEST")" || {
 
 run_dir() {
     ex_nr="$(grep -Po 'ex\K\d+' "$UNITTEST")"
-    for submission in "$TARGET"/*_ex${ex_nr}.py; do
+    for submission in "$TARGET"/*_ex${ex_nr}.*; do
         base="$(basename "$submission")"
         exercise="${base##*_}"
-        cp "$submission" "$exercise"
+        cp -f "$submission" "$exercise"
 
         # when "timeout" times out, it returns 124
         points="$(
             timeout "$TIMEOUT" python3 -u ./"$(basename "$UNITTEST")" </dev/null |
-                grep -Po '^(Moodle points|Estimated points upon submission): \K\d+\.?\d*'
+                grep -Pao '^(Moodle points|Estimated points upon submission): \K\d+\.?\d*'
             [ "${PIPESTATUS[0]}" != 124 ]
         )"
         [ "$?" -eq 1 ] && points="TIMEOUT"

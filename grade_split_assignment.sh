@@ -48,7 +48,7 @@ run_dir() {
                 # when "timeout" times out, it returns 124
                 points="$(
                     timeout "$TIMEOUT" python3 -u ./"$unittest" </dev/null |
-                        grep -Po '^(Moodle points|Estimated points upon submission): \K\d+\.?\d*'
+                        grep -Pao '^(Moodle points|Estimated points upon submission): \K\d+\.?\d*'
                     [ "${PIPESTATUS[0]}" != 124 ]
                 )"
                 [ "$?" -eq 1 ] && points="TIMEOUT"
