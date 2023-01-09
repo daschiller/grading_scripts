@@ -11,4 +11,5 @@ VOLUME /data
 # matplotlib cache directory needs to be writable
 ENV MPLCONFIGDIR=/tmp
 ENV LC_ALL=C.UTF-8
-ENTRYPOINT cd /data && bash
+WORKDIR /data
+ENTRYPOINT bash
