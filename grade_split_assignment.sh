@@ -41,9 +41,16 @@ run_dir() {
         for unittest in $UNITTESTS; do
             exercise="${unittest%%_*}".py
             ex_nr="$(grep -Po 'ex\K\d+' <<<"$unittest")"
-            submission="$(echo "$TARGET"/"$student"*/ex"$ex_nr".py)"
+            submission="$(echo "$TARGET"/"$student"*/ex"$ex_nr".*)"
             if [ -n "$submission" ]; then
-                cp "$submission" "$exercise"
+                if [[ "$submission" = *.txt ]]; then
+                    exercise="${exercise/.py/.txt}"
+                fi
+                # copy reference solutions, if available
+                if [ -d "reference/" ]; then
+                    cp -f reference/*.py .
+                fi
+                cp -f "$submission" "$exercise"
 
                 # when "timeout" times out, it returns 124
                 points="$(
