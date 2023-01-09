@@ -21,11 +21,17 @@ gradebook_df = pd.read_csv(args.gradebook_csv)
 
 for _, row in input_df.iterrows():
     index = gradebook_df.index[gradebook_df["Full name"] == row["name"]]
+    name = gradebook_df.loc[index, "Full name"].to_string(index=False).strip()
     if not index.empty:
         try:
+            if not pd.isna(gradebook_df.loc[index, "Grade"]).bool():
+                print(f"Modifying existing grade for {name}")
             gradebook_df.loc[index, "Grade"] = float(row["points"])
         except ValueError:
             gradebook_df.loc[index, "Grade"] = 0.0
+
+        if not pd.isna(gradebook_df.loc[index, "Feedback comments"]).bool():
+            print(f"Modifying existing feedback for {name}")
         gradebook_df.loc[index, "Feedback comments"] = row["feedback"]
     else:
         print(f"'{row['name']}' couldn't be matched!")
