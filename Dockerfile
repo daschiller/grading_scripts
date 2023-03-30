@@ -1,6 +1,8 @@
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y bc less python3 python3-pip --no-install-recommends
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    bc less python3 python3-pip python-is-python3
 COPY requirements.txt /tmp/requirements.txt
 RUN pip3 install -r /tmp/requirements.txt
 RUN pip3 install ipython ipdb

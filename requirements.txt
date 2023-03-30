@@ -1,1 +1,4 @@
+dill
+matplotlib
 numpy
+pillow
