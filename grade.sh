@@ -72,7 +72,7 @@ print_header() {
 
 run_file() {
     base="$(basename "$TARGET")"
-    exercise="${base##*_}"
+    exercise="${base##*_file_}"
     # copy reference solutions, if available
     if [ -d "reference/" ]; then
         cp -f reference/*.py .

@@ -26,7 +26,7 @@ fi
     usage
     exit 1
 }
-UNITTESTS="$(echo ex*_unittest.py)"
+UNITTESTS="$(echo *_unittest.py)"
 [ -n "$UNITTESTS" ] || {
     echo "Error: no unit tests found in working directory" >&2
     usage
@@ -38,9 +38,8 @@ run_dir() {
     for student in "${students[@]}"; do
         echo -n "$student""$SEP"
         for unittest in $UNITTESTS; do
-            exercise="${unittest%%_*}".py
-            ex_nr="$(grep -Po 'ex\K\d+' <<<"$unittest")"
-            submission="$(echo "$TARGET"/"$student"*ex"$ex_nr".*)"
+            exercise="${unittest%_*}".py
+            submission="$(echo "$TARGET"/"$student"*_file_"$exercise")"
             if [ -n "$submission" ]; then
                 if [[ "$submission" = *.txt ]]; then
                     exercise="${exercise/.py/.txt}"
@@ -76,7 +75,7 @@ print_header() {
     echo -ne "\xEF\xBB\xBF"
     echo -ne name"$SEP"
     for unittest in $UNITTESTS; do
-        echo -ne "${unittest%%_*}""$SEP"
+        echo -ne "${unittest%_*}""$SEP"
     done
     echo -e feedback
 }
