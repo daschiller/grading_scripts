@@ -2,3 +2,4 @@ dill
 matplotlib
 numpy
 pillow
+tqdm
