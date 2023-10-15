@@ -1,5 +1,10 @@
-dill
-matplotlib
-numpy
-pillow
-tqdm
+#dill
+#matplotlib
+#numpy
+#pillow
+#tqdm
+#tensorboard
+#scikit-learn
+#--extra-index-url https://download.pytorch.org/whl/cpu
+#torch
+#torchvision

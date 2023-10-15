@@ -1,5 +1,6 @@
 FROM ubuntu:22.04
 
+ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     bc less python3 python3-pip python-is-python3
