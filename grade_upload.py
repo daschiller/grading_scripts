@@ -16,7 +16,7 @@ parser.add_argument("input_csv")
 parser.add_argument("gradebook_csv")
 args = parser.parse_args()
 
-input_df = pd.read_csv(args.input_csv, delimiter=DELIMITER)
+input_df = pd.read_csv(args.input_csv, delimiter=DELIMITER, keep_default_na=False)
 gradebook_df = pd.read_csv(args.gradebook_csv)
 
 for _, row in input_df.iterrows():
@@ -32,7 +32,9 @@ for _, row in input_df.iterrows():
 
         if not pd.isna(gradebook_df.loc[index, "Feedback comments"]).bool():
             print(f"Modifying existing feedback for {name}")
-        gradebook_df.loc[index, "Feedback comments"] = row["feedback"]
+        gradebook_df.loc[index, "Feedback comments"] = row["feedback"].replace(
+            "\n", "<br>"
+        )
     else:
         print(f"'{row['name']}' couldn't be matched!")
 
