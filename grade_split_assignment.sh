@@ -39,8 +39,9 @@ run_dir() {
         student="${basedir%%_*}"
         echo -n "$student""$SEP"
         for unittest in $UNITTESTS; do
-            exercise="${unittest%_*}".py
-            submission="$(echo "$TARGET"/"$student"*/"$exercise")"
+            ex_no="${unittest%_*}"
+            exercise="$ex_no.py"
+            submission="$(echo "$TARGET"/"$student"_*/"$ex_no".*)"
             if [ -n "$submission" ]; then
                 if [[ "$submission" = *.txt ]]; then
                     exercise="${exercise/.py/.txt}"
